@@ -113,7 +113,7 @@ struct Token LexerNextToken(struct Lexer *lexer)
         }
 
         // Return the token as an identifier
-        token.type = TOK_IDENTIFIER;
+        token.type = TOK_PARAMS;
         token.value = InternString(lexer->string_pool, start, end - start);
         return token;
     }

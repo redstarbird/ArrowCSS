@@ -18,7 +18,8 @@ typedef enum
     TOK_COLON,      // :
     TOK_SEMICOLON,  // ;
     TOK_AT_RULE,    // @media, @keyframes
-    TOK_EOF
+    TOK_PARAMS,     // Parameter of an at-rule
+    TOK_EOF         // End of file
 } TokenType;
 
 /** @brief Structure representing a token in the CSS parser */
@@ -65,7 +66,7 @@ struct ASTNode
         struct
         {
             // StringView for the selector (e.g., ".btn", "h1, h2")
-            const struct StringView *selectors;
+            struct StringView selectors;
             // Linked list of CSS_NODE_DECLARATION
             struct ASTNode *declarations;
         } ruleset;
@@ -74,9 +75,9 @@ struct ASTNode
         struct
         {
             // StringView for the property name (e.g., "color")
-            const struct StringView *property;
+            struct StringView property;
             // StringView for the property value (e.g., "red", "16px")
-            const struct StringView *value;
+            struct StringView value;
             // Flag indicating if the declaration is marked as !important
             bool important;
         } decl;
@@ -85,9 +86,9 @@ struct ASTNode
         struct
         {
             // StringView for the at-rule name (e.g., "media", "keyframes")
-            const struct StringView name;
+            struct StringView name;
             // StringView for the at-rule parameters (e.g., "(max-width: 600px)")
-            const struct StringView *params;
+            struct StringView params;
             // Linked list of child nodes (e.g., rulesets inside @media)
             struct ASTNode *block;
         } at_rule;
