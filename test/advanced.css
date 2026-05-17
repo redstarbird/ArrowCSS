@@ -1,0 +1,55 @@
+/*
+  Advanced CSS test suite
+  Tests nesting, complex values, @rules, and pseudo-selectors.
+*/
+
+/* Custom properties with complex values and math operations */
+:root {
+    --primary-color: #ffffff;
+    --base-padding: 16px;
+    /* Statement containing math operators and nested parentheses */
+    --calc-width: calc(100vw - (var(--base-padding) * 2));
+}
+
+/* @-rules requiring recursive block parsing */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 100%;
+        margin: 0px;
+    }
+
+    @supports (display: grid) {
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+}
+
+/* Complex selector with pseudo-classes and native nesting */
+.modern-button {
+    color: var(--primary-color);
+    width: var(--calc-width);
+    
+    /* Data URI background */
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==);
+    
+    transition: all 0.3s ease-in-out;
+
+    /* Native CSS Nesting*/
+    &:hover {
+        background-color: #000000;
+        transform: translateY(-2px);
+    }
+
+    /* Pseudo-element with escaped content */
+    &::before {
+        content: "Click \"; /* Escaped quote inside a string */";
+        display: block;
+    }
+}
+
+/* Complex selector with pseudo-classes */
+ul.list > li:nth-child(2n + 1):not(.hidden) {
+    opacity: 0.8;
+}

@@ -1,0 +1,27 @@
+/* 
+  Basic layout styles 
+  For testing standard rulesets, declarations, and path resolution for background images.
+*/
+
+body {
+    background-color: #ffffff;
+    margin: 0px;
+    padding: 10px 20px 10px 20px;
+    font-family: Arial, sans-serif;
+}
+
+#header {
+    width: 100%;
+    border-bottom: 1px solid #cccccc;
+}
+
+.card {
+    background-image: url('./assets/card-bg.jpg');
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+
+.card .title {
+    font-size: 18px;
+    font-weight: bold;
+}
