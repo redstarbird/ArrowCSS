@@ -22,27 +22,26 @@ typedef enum
 } TokenType;
 
 /** @brief Structure representing a token in the CSS parser */
-typedef struct
+typedef struct Token
 {
     // Token type
     TokenType type;
     // String view of the token (e.g., "color", "red")
-    const struct StringView value;
+    struct StringView value;
 } Token;
 
-
 /** @brief The Semantic types of AST Nodes */
-typedef enum CssNodeType {
+typedef enum CssNodeType
+{
     // The root of the AST, representing the entire stylesheet
     CSS_NODE_STYLESHEET,
     // A ruleset, representing a selector and its declarations (e.g., .btn)
     CSS_NODE_RULESET,
     // A declaration, representing a property-value pair (e.g., color: red)
     CSS_NODE_DECLARATION, // color: red;
-    // An at-rule, representing constructs like @media or @keyframes
+                          // An at-rule, representing constructs like @media or @keyframes
     CSS_NODE_AT_RULE
 } CssNodeType;
-
 
 /** @brief Structure representing a node in the CSS Abstract Syntax Tree (AST) */
 struct ASTNode
@@ -53,23 +52,27 @@ struct ASTNode
     struct ASTNode *next;
 
     /** @brief Union holding node-specific data based on the node type */
-    union {
+    union
+    {
         // Active if type == CSS_NODE_STYLESHEET
-        struct {
+        struct
+        {
             // Linked list of child nodes (rulesets, at-rules)
             struct ASTNode *children;
         } stylesheet;
 
         // Active if type == CSS_NODE_RULESET
-        struct {
+        struct
+        {
             // StringView for the selector (e.g., ".btn", "h1, h2")
-            const struct StringView *selectors; 
+            const struct StringView *selectors;
             // Linked list of CSS_NODE_DECLARATION
-            struct ASTNode *declarations;              
+            struct ASTNode *declarations;
         } ruleset;
 
         // Active if type == CSS_NODE_DECLARATION
-        struct {
+        struct
+        {
             // StringView for the property name (e.g., "color")
             const struct StringView *property;
             // StringView for the property value (e.g., "red", "16px")
@@ -79,12 +82,13 @@ struct ASTNode
         } decl;
 
         // Active if type == CSS_NODE_AT_RULE
-        struct {
+        struct
+        {
             // StringView for the at-rule name (e.g., "media", "keyframes")
             const struct StringView name;
             // StringView for the at-rule parameters (e.g., "(max-width: 600px)")
             const struct StringView *params;
-            // Linked list of child nodes (e.g., rulesets inside @media)    
+            // Linked list of child nodes (e.g., rulesets inside @media)
             struct ASTNode *block;
         } at_rule;
     } data;
@@ -96,7 +100,7 @@ typedef struct
     /** @brief Internal, read-only: String pool for managing string literals */
     struct StringPool *stringPool;
     /** @brief Internal, read-only: Memory arena for allocating AST nodes */
-    struct MemoryArena *arena;  
+    struct MemoryArena *arena;
     /** @brief Read-only: Root node of the AST */
     struct ASTNode *root;
 } CSSAST;
