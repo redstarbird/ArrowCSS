@@ -85,7 +85,42 @@ struct Token LexerNextToken(struct Lexer *lexer)
     }
 
     const char *start = lexer->cursor;
-    char c = LexerAdvance(lexer);
+    char c = LexerPeek(lexer);
+
+    // Specific handling for finding rule parameters
+    if (lexer->state == LEXER_STATE_AT_RULE_PARAMS)
+    {
+        // If the current char is a { or ; then the paramters are over
+        if (c == '{' || c == ';')
+        {
+            // Put the state back to normal
+            lexer->state = LEXER_STATE_NORMAL;
+
+            // Let the normal mode handle the { or ; character on the next loop
+            return LexerNextToken(lexer);
+        }
+
+        while (!LexerIsAtEnd(lexer) && LexerPeek(lexer) != '{' && LexerPeek(lexer) != ';')
+        {
+            LexerAdvance(lexer);
+        }
+
+        // Get rid of any extra whitespace from the end of the parameter string
+        const char *end = lexer->cursor;
+        while (end > start && isspace(*(end - 1)))
+        {
+            end--;
+        }
+
+        // Return the token as an identifier
+        token.type = TOK_IDENTIFIER;
+        token.value = InternString(lexer->string_pool, start, end - start);
+        return token;
+    }
+
+    // Normal state
+
+    c = LexerAdvance(lexer);
 
     switch (c)
     {
@@ -116,6 +151,9 @@ struct Token LexerNextToken(struct Lexer *lexer)
         size_t length = lexer->cursor - start;
         token.type = TOK_AT_RULE;
         token.value = InternString(lexer->string_pool, start, length);
+
+        // Change the state to at rule parameters
+        lexer->state = LEXER_STATE_AT_RULE_PARAMS;
 
         return token;
     }

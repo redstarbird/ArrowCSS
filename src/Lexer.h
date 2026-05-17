@@ -6,6 +6,15 @@
 #include <stdbool.h>
 #include <StringPool.h>
 
+typedef enum LexerState
+{
+    // The normal lexer state
+    LEXER_STATE_NORMAL,
+    // Looking for the parameters in an @ rule (e.g, @media, @keyframes)
+    LEXER_STATE_AT_RULE_PARAMS
+
+} LexerState;
+
 struct Lexer
 {
     // Pointer to the input CSS string
@@ -25,6 +34,9 @@ struct Lexer
 
     // String pool for token values
     struct StringPool *string_pool;
+
+    // The current state of the lexer
+    enum LexerState state;
 };
 
 /** @brief Initialise a lexer instance */
