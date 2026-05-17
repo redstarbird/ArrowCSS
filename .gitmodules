@@ -1,0 +1,3 @@
+[submodule "external/ArenaAllocator"]
+	path = external/ArenaAllocator
+	url = https://github.com/redstarbird/MicroArenaAllocator.git
