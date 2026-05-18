@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.10)
+project(ArrowCSS VERSION 0.1.0 LANGUAGES C)
+
+add_subdirectory(external/ArenaAllocator)
+
+add_library(ArrowCSS STATIC 
+src/CSSParser.c
+    )
+
+target_sources(ArrowCSS PRIVATE
+    src/Lexer.c
+    src/ASTWalk.c
+)
+
+target_include_directories(ArrowCSS PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(ArrowCSS PUBLIC MemoryArena)
+
+# -----------------------------
+# Testing setup
+# -----------------------------
+if(PROJECT_IS_TOP_LEVEL)
+    include(CTest)
+    enable_testing()
+
+    add_executable(TestCSS test/SimpleParseTest.c)
+
+    # Link the MemoryArena library to the test executable
+    target_link_libraries(TestCSS PRIVATE ArrowCSS)
+
+    add_test(NAME SimpleParse COMMAND TestCSS)
+endif()
