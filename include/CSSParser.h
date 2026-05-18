@@ -1,5 +1,5 @@
 #include "../include/CSSAST.h"
-#include "Lexer.h"
+#include "../src/Lexer.h"
 
 typedef struct Parser
 {
@@ -18,4 +18,4 @@ typedef struct Parser
 /** @brief Initialise a parser instance */
 void ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena);
 
-struct CSSAST *ParseCSSToAST(struct Parser *parser);
+struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct MemoryArena *arena, struct StringPool *pool);
