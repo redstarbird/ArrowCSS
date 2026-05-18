@@ -18,7 +18,7 @@ typedef enum LexerState
 struct Lexer
 {
     // Pointer to the input CSS string
-    char *input;
+    const char *input;
 
     // Length of the input string
     size_t length;
