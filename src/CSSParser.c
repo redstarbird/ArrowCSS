@@ -95,7 +95,7 @@ static struct ASTNode *ParseRuleset(struct Parser *parser)
     return node;
 }
 
-struct ASTNode *ParseStylesheet(struct Parser *parser)
+struct CSSAST *ParseStylesheet(struct Parser *parser)
 {
     // Get the first token after the stylesheet
     advance(parser);
