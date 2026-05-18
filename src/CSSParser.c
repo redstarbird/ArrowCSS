@@ -134,7 +134,7 @@ struct CSSAST *ParseStylesheet(struct Parser *parser)
         else
         {
             currentRule->next = rule;
-            currentRule = true;
+            currentRule = rule;
         }
     }
     root->data.stylesheet.children = firstRule;
