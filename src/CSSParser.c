@@ -1,4 +1,4 @@
-#include "../include/CSSParser.h"
+#include "CSSParser.h"
 
 // Move to the next function
 static void advance(struct Parser *parser)

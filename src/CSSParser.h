@@ -1,6 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include "../include/CSSAST.h"
+#include "CSSAST.h"
 #include "../src/Lexer.h"
 
 typedef struct Parser
