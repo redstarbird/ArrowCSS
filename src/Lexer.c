@@ -31,7 +31,7 @@ static inline char LexerAdvance(struct Lexer *lexer)
 
 static inline bool LexerIsAtEnd(struct Lexer *lexer)
 {
-    return lexer->cursor >= lexer->length;
+    return lexer->cursor >= lexer->input + lexer->length;
 }
 
 static void LexerSkipWhitespaceAndComments(struct Lexer *lexer)
@@ -142,7 +142,7 @@ struct Token LexerNextToken(struct Lexer *lexer)
     if (c == '@')
     {
         // Consume the at-rule name, until a whitespace or a special character is found
-        while (!LexerIsAtEnd(lexer) && !ispace(LexerPeek(lexer)) && LexerPeek(lexer) != '{' && LexerPeek(lexer) != ';')
+        while (!LexerIsAtEnd(lexer) && !isspace(LexerPeek(lexer)) && LexerPeek(lexer) != '{' && LexerPeek(lexer) != ';')
         {
             LexerAdvance(lexer);
         }
@@ -162,7 +162,7 @@ struct Token LexerNextToken(struct Lexer *lexer)
     while (!LexerIsAtEnd(lexer))
     {
         char next = LexerPeek(lexer);
-        if (ispace(next) || next == '{' || next == '}' || next == ':' || next == ';')
+        if (isspace(next) || next == '{' || next == '}' || next == ':' || next == ';')
         {
             break;
         }
