@@ -96,7 +96,7 @@ struct ASTNode
 };
 
 /** @brief Structure representing the entire CSS Abstract Syntax Tree (AST) */
-typedef struct
+typedef struct CSSAST
 {
     /** @brief Internal, read-only: String pool for managing string literals */
     struct StringPool *stringPool;
