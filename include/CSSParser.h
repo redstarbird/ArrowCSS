@@ -1,3 +1,5 @@
+#ifndef PARSER_H
+#define PARSER_H
 #include "../include/CSSAST.h"
 #include "../src/Lexer.h"
 
@@ -19,3 +21,5 @@ typedef struct Parser
 void ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena);
 
 struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct MemoryArena *arena, struct StringPool *pool);
+
+#endif
