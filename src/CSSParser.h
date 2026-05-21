@@ -3,7 +3,7 @@
 #include "CSSAST.h"
 #include "../src/Lexer.h"
 
-typedef struct
+typedef struct ArrowCssParseOptions
 {
     // For error reporting
     const char *filename;
@@ -36,6 +36,6 @@ typedef struct Parser
 /** @brief Initialise a parser instance */
 void ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena);
 
-struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct MemoryArena *arena, struct StringPool *pool);
+struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssParseOptions *options);
 
 #endif

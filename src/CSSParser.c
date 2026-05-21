@@ -150,12 +150,23 @@ struct Parser *ParserInit(struct Parser *parser, struct Lexer *lexer, struct Mem
     parser->arena = arena;
 }
 
-struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct MemoryArena *arena, struct StringPool *pool)
+struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssParseOptions *options)
 {
+    struct MemoryArena *arena = NULL;
+    struct StringPool *pool = NULL;
+
+    if (options != NULL)
+    {
+        arena = options->arena;
+        pool = options->pool;
+    }
+
+    // If no arena was provided, create one
     if (arena == NULL)
     {
         arena = CreateArena(length, OOM_GROW_ARENA, NULL);
     }
+    // If no arena was provided, create one
     if (pool == NULL)
     {
         pool = CreateStringPool(2 << 19, length, OOM_GROW_ARENA, NULL);
