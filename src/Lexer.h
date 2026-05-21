@@ -48,4 +48,9 @@ void LexerInit(struct Lexer *lexer, const char *input, size_t length, struct Str
  */
 struct Token LexerNextToken(struct Lexer *lexer);
 
+inline char LexerPeek(struct Lexer *lexer)
+{
+    return *lexer->cursor;
+}
+
 #endif // LEXER_H
