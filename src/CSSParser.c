@@ -123,13 +123,13 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
         // Simple statement has no children
         node->data.at_rule.block = NULL;
     }
-    // If next token is a '{' then the at-rule contains a block of nested at-rules or declarations
+    // If next token is a '{' then the at-rule contains a block
     else if (check(parser, TOK_LBRACE))
     {
         struct ASTNode *firstNested = NULL;
         struct ASTNode *currentNested = NULL;
 
-        // Keep parsing all of the declarations in the block until there are none left
+        // Keep parsing all of the rulesets/at-rules in the block until there are none left
         while (!check(parser, TOK_RBRACE) && !check(parser, TOK_EOF))
         {
 
@@ -218,7 +218,7 @@ struct CSSAST *ParseStylesheet(struct Parser *parser)
     return ast;
 }
 
-struct Parser *ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena)
+void ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena)
 {
     parser->ErrorDiscovered = false;
     parser->lexer = lexer;
