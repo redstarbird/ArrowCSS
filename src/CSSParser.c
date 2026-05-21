@@ -143,6 +143,13 @@ struct CSSAST *ParseStylesheet(struct Parser *parser)
     return ast;
 }
 
+struct Parser *ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena)
+{
+    parser->ErrorDiscovered = false;
+    parser->lexer = lexer;
+    parser->arena = arena;
+}
+
 struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct MemoryArena *arena, struct StringPool *pool)
 {
     if (arena == NULL)
