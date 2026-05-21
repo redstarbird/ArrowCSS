@@ -2,22 +2,7 @@
 #define PARSER_H
 #include "CSSAST.h"
 #include "../src/Lexer.h"
-
-typedef struct ArrowCssParseOptions
-{
-    // For error reporting
-    const char *filename;
-    // Should source maps be generated
-    bool generateSourceMap;
-    // Supress any console warnings
-    bool silent;
-
-    // Memory arena
-    struct MemoryArena *arena;
-    // String pool
-    struct StringPool *pool;
-
-} ArrowCssParseOptions;
+#include "arrowcss.h"
 
 typedef struct Parser
 {
@@ -35,7 +20,5 @@ typedef struct Parser
 
 /** @brief Initialise a parser instance */
 void ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena);
-
-struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssParseOptions *options);
 
 #endif
