@@ -17,7 +17,7 @@ typedef struct
     // String pool
     struct StringPool *pool;
 
-} ArrowParseOptions;
+} ArrowCssParseOptions;
 
 typedef struct Parser
 {
