@@ -3,6 +3,22 @@
 #include "CSSAST.h"
 #include "../src/Lexer.h"
 
+typedef struct
+{
+    // For error reporting
+    const char *filename;
+    // Should source maps be generated
+    bool generateSourceMap;
+    // Supress any console warnings
+    bool silent;
+
+    // Memory arena
+    struct MemoryArena *arena;
+    // String pool
+    struct StringPool *pool;
+
+} ArrowParseOptions;
+
 typedef struct Parser
 {
     // The lexer feeding tokens to the parser
