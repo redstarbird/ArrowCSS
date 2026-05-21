@@ -95,6 +95,81 @@ static struct ASTNode *ParseRuleset(struct Parser *parser)
     return node;
 }
 
+struct ASTNode *ParseAtRule(struct Parser *parser)
+{
+    struct ASTNode *node = PushStruct(parser->arena, struct ASTNode);
+    node->type = CSS_NODE_AT_RULE;
+    node->next = NULL;
+
+    // Consume the name of the at-rule (e.g, @media or @import)
+    consume(parser, TOK_AT_RULE, "Expected at-rule name");
+    node->data.at_rule.name = parser->prevToken.value;
+
+    // Consume the at-rule parameters if they exist
+    if (check(parser, TOK_PARAMS))
+    {
+        consume(parser, TOK_PARAMS, "Expected at-rule parameters");
+        node->data.at_rule.params = parser->prevToken.value;
+    }
+    else
+    {
+        node->data.at_rule.params = (struct StringView){0};
+    }
+
+    // If the next token is a semicolon, the at-rule is a statement such as "@import url(...);"
+    if (check(parser, TOK_SEMICOLON))
+    {
+        consume(parser, TOK_SEMICOLON, "Expected ';' after at-rule statement");
+        // Simple statement has no children
+        node->data.at_rule.block = NULL;
+    }
+    // If next token is a '{' then the at-rule contains a block of nested at-rules or declarations
+    else if (check(parser, TOK_LBRACE))
+    {
+        struct ASTNode *firstNested = NULL;
+        struct ASTNode *currentNested = NULL;
+
+        // Keep parsing all of the declarations in the block until there are none left
+        while (!check(parser, TOK_RBRACE) && !check(parser, TOK_EOF))
+        {
+
+            struct ASTNode *nestedNode = NULL;
+
+            if (check(parser, TOK_AT_RULE))
+            {
+                nestedNode = ParseAtRule(parser);
+            }
+            else
+            {
+                nestedNode = ParseRuleset(parser);
+            }
+
+            if (firstNested == NULL)
+            {
+                firstNested = nestedNode;
+                currentNested = nestedNode;
+            }
+            else
+            {
+                currentNested->next = nestedNode;
+                currentNested = nestedNode;
+            }
+        }
+        node->data.at_rule.block = firstNested;
+
+        // Ensure at-rule ends with '{' for correct sytnax
+        consume(parser, TOK_RBRACE, "Expected '}' after at-rule block");
+    }
+    // If there is no ';' or '{' after the at-rule, it is a syntax error
+    else
+    {
+        printf("Syntax error: Expected '{' or ';' after at-rule statement\n");
+        parser->ErrorDiscovered = true;
+    }
+
+    return node;
+}
+
 struct CSSAST *ParseStylesheet(struct Parser *parser)
 {
     // Get the first token after the stylesheet
@@ -118,7 +193,7 @@ struct CSSAST *ParseStylesheet(struct Parser *parser)
         // Decide what to parse based on the current token
         if (check(parser, TOK_AT_RULE))
         {
-            // Parse at-rule (NOT YET IMPLEMENTED!)
+            rule = ParseAtRule(parser);
         }
         else
         {
