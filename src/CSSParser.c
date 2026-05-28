@@ -1,5 +1,19 @@
 #include "CSSParser.h"
 
+// Saves lexer state
+void LexerSaveState(struct Lexer *lexer, struct Lexer *saveTo)
+{
+    // Struct data copy
+    *saveTo = *lexer;
+}
+
+// Restores lexer state
+void LexerRestoreState(struct Lexer *lexer, struct Lexer *restoreFrom)
+{
+    // Struct data copy
+    *lexer = *restoreFrom;
+}
+
 // Move to the next function
 static void advance(struct Parser *parser)
 {
