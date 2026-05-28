@@ -171,7 +171,7 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
         }
         node->data.at_rule.block = firstNested;
 
-        // Ensure at-rule ends with '{' for correct sytnax
+        // Ensure at-rule ends with '{' for correct syntax
         consume(parser, TOK_RBRACE, "Expected '}' after at-rule block");
     }
     // If there is no ';' or '{' after the at-rule, it is a syntax error
