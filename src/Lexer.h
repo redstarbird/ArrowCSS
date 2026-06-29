@@ -37,6 +37,9 @@ struct Lexer
 
     // The current state of the lexer
     enum LexerState state;
+
+    // Flag to indicate if the lexer is peeking at the next token without consuming it
+    bool lexerPeeking;
 };
 
 /** @brief Initialise a lexer instance */

@@ -114,7 +114,16 @@ struct Token LexerNextToken(struct Lexer *lexer)
 
         // Return the token as an identifier
         token.type = TOK_PARAMS;
-        token.value = InternString(lexer->string_pool, start, end - start);
+
+        // Only consume the token if the lexer is not peeking
+        if (!lexer->lexerPeeking)
+        {
+            token.value = InternString(lexer->string_pool, start, end - start);
+        }
+        else
+        {
+            token.value = (struct StringView){0};
+        }
         return token;
     }
 
@@ -150,7 +159,16 @@ struct Token LexerNextToken(struct Lexer *lexer)
         // Create a token for the at-rule
         size_t length = lexer->cursor - start;
         token.type = TOK_AT_RULE;
-        token.value = InternString(lexer->string_pool, start, length);
+
+        // Only consume the token if the lexer is not peeking
+        if (!lexer->lexerPeeking)
+        {
+            token.value = InternString(lexer->string_pool, start, length);
+        }
+        else
+        {
+            token.value = (struct StringView){0};
+        }
 
         // Change the state to at rule parameters
         lexer->state = LEXER_STATE_AT_RULE_PARAMS;
