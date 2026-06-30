@@ -24,7 +24,7 @@ if(PROJECT_IS_TOP_LEVEL)
     include(CTest)
     enable_testing()
 
-    add_executable(TestCSS test/SimpleParseTest.c)
+    add_executable(TestCSS test/test_lexer.c)
 
     # Link the MemoryArena library to the test executable
     target_link_libraries(TestCSS PRIVATE ArrowCSS)
