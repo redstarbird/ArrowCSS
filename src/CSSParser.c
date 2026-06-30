@@ -1,5 +1,8 @@
 #include "CSSParser.h"
 
+// Forward declaration of ParseAtRule so it can be recursively called by ParseRuleset
+struct ASTNode *ParseAtRule(struct Parser *parser);
+
 // Saves lexer state
 void LexerSaveState(struct Lexer *lexer, struct Lexer *saveTo)
 {
