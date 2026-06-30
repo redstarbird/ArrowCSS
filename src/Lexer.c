@@ -11,10 +11,7 @@ void LexerInit(struct Lexer *lexer, const char *input, size_t length, struct Str
     lexer->string_pool = string_pool;
 }
 
-inline char LexerPeek(struct Lexer *lexer)
-{
-    return *lexer->cursor;
-}
+extern inline char LexerPeek(struct Lexer *lexer);
 
 static inline char LexerAdvance(struct Lexer *lexer)
 {
