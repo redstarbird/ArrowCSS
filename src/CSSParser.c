@@ -44,6 +44,13 @@ static bool consume(Parser *parser, TokenType type, const char *error_message)
     // If not the expected token then the CSS is malformed
     printf("Syntax Error: %s\n", error_message);
     parser->ErrorDiscovered = true;
+
+    // Forcibly advance the lexer forward to prevent an infinite loop in the case of a syntax error
+    if (parser->currentToken.type != TOK_EOF)
+    {
+        advance(parser);
+    }
+
     return false;
 }
 
