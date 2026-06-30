@@ -61,6 +61,9 @@ static bool isNextConstructADeclaration(struct Parser *parser)
     struct Lexer savedLexer;
     LexerSaveState(parser->lexer, &savedLexer);
 
+    // Set the lexer to be peeking so extra tokens are not consumed here to reduce unecessary CPU cycles
+    parser->lexer->lexerPeeking = true;
+
     // Check if the next construct is a declaration
     bool isDeclaration = false;
     bool colonFound = false;
