@@ -9,7 +9,8 @@ src/CSSParser.c
 
 target_sources(ArrowCSS PRIVATE
     src/Lexer.c
-    src/ASTWalk.c
+    src/CSSParser.c
+    src/Lexer.c
 )
 
 target_include_directories(ArrowCSS PUBLIC
