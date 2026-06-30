@@ -44,6 +44,65 @@ static bool consume(Parser *parser, TokenType type, const char *error_message)
     return false;
 }
 
+static bool isNextConstructADeclaration(struct Parser *parser)
+{
+
+    // Save the current lexer state
+    struct Lexer savedLexer;
+    LexerSaveState(parser->lexer, &savedLexer);
+
+    // Check if the next construct is a declaration
+    bool isDeclaration = false;
+    bool colonFound = false;
+
+    while (true)
+    {
+        struct Token token = LexerNextToken(parser->lexer);
+
+        // If we hit the end of the file, then there is no declaration
+        if (token.type == TOK_EOF)
+        {
+            isDeclaration = false;
+            break;
+        }
+
+        // If a colon is found, the next construct could be a ruleset or a declaration so keep looking
+        if (token.type == TOK_COLON)
+        {
+            colonFound = true;
+        }
+
+        // If we find a left brace, then the next construct is a ruleset
+        // e.g, ".btn { color: red; }"
+        if (token.type == TOK_LBRACE)
+        {
+            isDeclaration = false;
+            break;
+        }
+
+        // If we find a semicolon first, then the next construct is a declaration
+        // e.g, "color: red;"
+        if (token.type == TOK_SEMICOLON)
+        {
+            isDeclaration = true;
+            break;
+        }
+
+        if (token.type == TOK_RBRACE)
+        {
+            // If we find a '{' before a ':' then the construct is a ruleset otherwise it is a declaration without a semicolon
+            // e.g, ".btn { color: red; }" vs "color: red" at the end of a ruleset block
+            isDeclaration = colonFound;
+            break;
+        }
+    }
+
+    // Restore the lexer state
+    LexerRestoreState(parser->lexer, &savedLexer);
+
+    return isDeclaration;
+}
+
 // Parses a declaration. This should have a sequence of Identifier -> Colon -> Identifier -> Semicolon
 static struct ASTNode *ParseDeclaration(struct Parser *parser)
 {
@@ -88,8 +147,25 @@ static struct ASTNode *ParseRuleset(struct Parser *parser)
 
     while (!check(parser, TOK_RBRACE) && !check(parser, TOK_EOF))
     {
-        struct ASTNode *decl = ParseDeclaration(parser);
+        struct ASTNode *decl = NULL;
 
+        // Parse a declaration inside the ruleset, e.g., "color: red;". This is the most common case!!
+        if (isNextConstructADeclaration(parser))
+        {
+            decl = ParseDeclaration(parser);
+        }
+        // Parse an at-rule inside the ruleset, e.g., @media or @keyframes
+        else if (check(parser, TOK_AT_RULE))
+        {
+            decl = ParseAtRule(parser);
+        }
+        // Parse a nested ruleset inside the ruleset, e.g., ".btn { color: red; }"
+        else
+        {
+            decl = ParseRuleset(parser);
+        }
+
+        // Add the node to the linked list of declarations inside the ruleset
         if (firstDecl == NULL)
         {
             firstDecl = decl;
@@ -149,10 +225,19 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
 
             struct ASTNode *nestedNode = NULL;
 
+            // Decide what to parse based on the whether the next construct is an at-rule, a ruleset or a declaration
+
+            // Handle nested at-rules, e.g., @media inside @media
             if (check(parser, TOK_AT_RULE))
             {
                 nestedNode = ParseAtRule(parser);
             }
+            // Handle nested declarations, e.g., "color: red;" inside @media
+            else if (isNextConstructADeclaration(parser))
+            {
+                nestedNode = ParseDeclaration(parser);
+            }
+            // Handle nested rulesets, e.g., ".btn { color: red; }" inside @media
             else
             {
                 nestedNode = ParseRuleset(parser);
