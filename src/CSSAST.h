@@ -104,6 +104,10 @@ typedef struct CSSAST
     struct MemoryArena *arena;
     /** @brief Read-only: Root node of the AST */
     struct ASTNode *root;
+    /** @brief Internal, read-only: Tracks the ownership of the memory arena */
+    bool ownsArena;
+    /** @brief Internal, read-only: Tracks the ownership of the string pool */
+    bool ownsStringPool;
 } CSSAST;
 
 #endif // CSSAST_H

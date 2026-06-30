@@ -367,5 +367,8 @@ struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssPa
 
     struct CSSAST *ast = ParseStylesheet(&parser);
 
+    ast->ownsArena = (options == NULL || options->arena == NULL);
+    ast->ownsStringPool = (options == NULL || options->pool == NULL);
+
     return ast;
 }
