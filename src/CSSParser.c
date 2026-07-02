@@ -31,12 +31,8 @@ static bool check(Parser *parser, TokenType type)
     return parser->currentToken.type == type;
 }
 
-#include <stdlib.h>
-
 static bool consume(Parser *parser, TokenType type, const char *error_message)
 {
-    printf("\n\n\n\ncursor: %s\n", parser->lexer->cursor);
-    printf("token: %.*s\n\n", (int)parser->currentToken.value.length, parser->currentToken.value.data);
     // Check the current token is the expected token before consuming it
     if (check(parser, type))
     {
@@ -47,8 +43,6 @@ static bool consume(Parser *parser, TokenType type, const char *error_message)
     // If not the expected token then the CSS is malformed
     printf("Syntax Error: %s\n", error_message);
     parser->ErrorDiscovered = true;
-
-    // exit(1);
 
     // Forcibly advance the lexer forward to prevent an infinite loop in the case of a syntax error
     if (parser->currentToken.type != TOK_EOF)
