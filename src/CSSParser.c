@@ -27,11 +27,16 @@ static void advance(struct Parser *parser)
 // Checks if the current token is a specific type, if EOF then false is always returned
 static bool check(Parser *parser, TokenType type)
 {
+
     return parser->currentToken.type == type;
 }
 
+#include <stdlib.h>
+
 static bool consume(Parser *parser, TokenType type, const char *error_message)
 {
+    printf("\n\n\n\ncursor: %s\n", parser->lexer->cursor);
+    printf("token: %.*s\n\n", (int)parser->currentToken.value.length, parser->currentToken.value.data);
     // Check the current token is the expected token before consuming it
     if (check(parser, type))
     {
@@ -127,11 +132,11 @@ static struct ASTNode *ParseDeclaration(struct Parser *parser)
     consume(parser, TOK_IDENTIFIER, "Expected property name.");
     node->data.decl.property = parser->prevToken.value;
 
+    // Tell the lexer to store the next token as a blob including whitespace
+    parser->lexer->expectsValue = true;
+
     // Expect the colon seperating the property and value
     consume(parser, TOK_COLON, "Expected : after property name.");
-
-    // Tell the lexer to store the next value as a blob including whitespace
-    parser->lexer->expectsValue = true;
 
     // advance(parser);
 
@@ -147,6 +152,7 @@ static struct ASTNode *ParseDeclaration(struct Parser *parser)
     else if (!check(parser, TOK_LBRACE) && !check(parser, TOK_EOF))
     {
         printf("Syntax Error: Expected ';' after property value\n");
+
         parser->ErrorDiscovered = true;
 
         if (parser->currentToken.type != TOK_EOF)
