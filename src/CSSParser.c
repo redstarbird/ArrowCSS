@@ -375,7 +375,7 @@ struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssPa
     // If no arena was provided, create one
     if (arena == NULL)
     {
-        arena = CreateArena(length, OOM_GROW_ARENA, NULL);
+        arena = CreateArena(length * 5, OOM_GROW_ARENA, NULL);
     }
     // If no arena was provided, create one
     if (pool == NULL)
