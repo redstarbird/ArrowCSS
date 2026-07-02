@@ -27,8 +27,6 @@ static void advance(struct Parser *parser)
 // Checks if the current token is a specific type, if EOF then false is always returned
 static bool check(Parser *parser, TokenType type)
 {
-    if (parser->currentToken.type == TOK_EOF)
-        return false;
     return parser->currentToken.type == type;
 }
 
