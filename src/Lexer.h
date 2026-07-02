@@ -40,6 +40,9 @@ struct Lexer
 
     // Flag to indicate if the lexer is peeking at the next token without consuming it
     bool lexerPeeking;
+
+    // Flag to indicate if the lexer is parsing a large text/value blob including whitespaces
+    bool expectsValue;
 };
 
 /** @brief Initialise a lexer instance */

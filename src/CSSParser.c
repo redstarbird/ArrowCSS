@@ -45,6 +45,8 @@ static bool consume(Parser *parser, TokenType type, const char *error_message)
     printf("Syntax Error: %s\n", error_message);
     parser->ErrorDiscovered = true;
 
+    // exit(1);
+
     // Forcibly advance the lexer forward to prevent an infinite loop in the case of a syntax error
     if (parser->currentToken.type != TOK_EOF)
     {
@@ -130,12 +132,30 @@ static struct ASTNode *ParseDeclaration(struct Parser *parser)
     // Expect the colon seperating the property and value
     consume(parser, TOK_COLON, "Expected : after property name.");
 
+    // Tell the lexer to store the next value as a blob including whitespace
+    parser->lexer->expectsValue = true;
+
+    // advance(parser);
+
     // Expect the property value (e.g, "green")
     consume(parser, TOK_IDENTIFIER, "Expected property value.");
     node->data.decl.value = parser->prevToken.value;
 
-    // Expect the semicolon at the end of the declaration
-    consume(parser, TOK_SEMICOLON, "Expected : after property value");
+    // Expect the semicolon at the end of the declaration, or a '}'
+    if (check(parser, TOK_SEMICOLON))
+    {
+        consume(parser, TOK_SEMICOLON, "Expected : after property value");
+    }
+    else if (!check(parser, TOK_LBRACE) && !check(parser, TOK_EOF))
+    {
+        printf("Syntax Error: Expected ';' after property value\n");
+        parser->ErrorDiscovered = true;
+
+        if (parser->currentToken.type != TOK_EOF)
+        {
+            advance(parser);
+        }
+    }
 
     return node;
 }
@@ -356,7 +376,7 @@ struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssPa
     // If no arena was provided, create one
     if (pool == NULL)
     {
-        pool = CreateStringPool(2 << 19, length, OOM_GROW_ARENA, NULL);
+        pool = CreateStringPool(2 << 14, length + sizeof(struct StringView) * (2 << 14), OOM_GROW_ARENA, NULL);
     }
 
     struct Lexer lexer;

@@ -9,6 +9,8 @@ void LexerInit(struct Lexer *lexer, const char *input, size_t length, struct Str
     lexer->line = 1;
     lexer->column = 0;
     lexer->string_pool = string_pool;
+    lexer->lexerPeeking = false;
+    lexer->expectsValue = false;
 }
 
 extern inline char LexerPeek(struct Lexer *lexer);
@@ -69,9 +71,83 @@ static void LexerSkipWhitespaceAndComments(struct Lexer *lexer)
     }
 }
 
+#include <stdlib.h>
+
+struct Token GetValueBlob(struct Lexer *lexer)
+{
+    // Reset expects value flag
+    lexer->expectsValue = false;
+
+    const char *start = lexer->cursor;
+
+    // Store whether cursor is in a css string to avoid reading a ';' or '}' token from a string
+    bool inQuotes = false;
+
+    // Stores the character used for currently open quotes, " or '
+    char quoteChar = '\0';
+
+    while (*lexer->cursor != '\0')
+    {
+        char c = *lexer->cursor;
+
+        // Handle quote state to avoid tokens in strings
+        if (c == '"' || c == '\'')
+        {
+            if (!inQuotes)
+            {
+                inQuotes = true;
+                quoteChar = c;
+            }
+            else if (c == quoteChar)
+            {
+                inQuotes = false;
+            }
+        }
+
+        // Check for the end of the value blob
+        if (!inQuotes && (c == ';' || c == '}'))
+        {
+            break;
+        }
+
+        // Advance cursor
+        lexer->cursor++;
+    }
+
+    const char *end = lexer->cursor;
+
+    while (end > start && isspace(*(end - 1)))
+    {
+        end--;
+    }
+
+    // Create token
+    struct Token token;
+    token.type = TOK_IDENTIFIER;
+
+    // Only actually intern and return the string if the lexer is not peeking in a look-ahead operation
+    if (!lexer->lexerPeeking)
+    {
+        token.value = InternString(lexer->string_pool, start, end - start);
+    }
+    else
+    {
+        token.value = (struct StringView){0};
+    }
+
+    // printf("Token blob: '%.*s', peeking: %i\n", (int)token.value.length, token.value.data, lexer->lexerPeeking);
+
+    return token;
+}
+
 struct Token LexerNextToken(struct Lexer *lexer)
 {
     LexerSkipWhitespaceAndComments(lexer);
+
+    if (lexer->expectsValue)
+    {
+        return GetValueBlob(lexer);
+    }
 
     // Create a default EOF token to return the end of input is reached
     struct Token token = {.type = TOK_EOF, .value = {NULL}};
