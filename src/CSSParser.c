@@ -165,6 +165,17 @@ static struct ASTNode *ParseRuleset(struct Parser *parser)
     node->next = NULL;
 
     // Find the CSS selector
+    // consume(parser, TOK_IDENTIFIER, "Expected CSS selector.");
+
+    // Tell the lexer to capture everything up to the '{' character as a single blob
+    parser->lexer->expectsSelector = true;
+
+    // Rewind cursor to the start of the selector for the ruleset
+    parser->lexer->cursor -= parser->currentToken.value.length;
+
+    // Re-read from the rewound position using the expectsSelector mode
+    advance(parser);
+
     consume(parser, TOK_IDENTIFIER, "Expected CSS selector.");
     node->data.ruleset.selectors = parser->prevToken.value;
 

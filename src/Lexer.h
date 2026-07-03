@@ -43,6 +43,9 @@ struct Lexer
 
     // Flag to indicate if the lexer is parsing a large text/value blob including whitespaces
     bool expectsValue;
+
+    // Flag to indicate if the lexer is parsing a selector blob for a ruleset
+    bool expectsSelector;
 };
 
 /** @brief Initialise a lexer instance */
