@@ -4,7 +4,7 @@
 
 void test_lexer_punctuation()
 {
-    const char *css = "{ } : ;";
+    const char *css = "\r{ } \n\n\r\r: ;\r\n";
     struct Lexer lexer;
 
     struct StringPool *pool = CreateStringPool(4096, MB(4), OOM_ABORT, NULL);
