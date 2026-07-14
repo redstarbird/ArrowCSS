@@ -138,6 +138,9 @@ struct Token GetValueBlob(struct Lexer *lexer)
 
     // printf("Token blob: '%.*s', peeking: %i\n", (int)token.value.length, token.value.data, lexer->lexerPeeking);
 
+    // Set the start pointer of the token to the beginning of the value blob
+    token.start = (char *)start;
+
     return token;
 }
 
@@ -204,6 +207,9 @@ struct Token GetRulesetSelector(struct Lexer *lexer)
         token.value = (struct StringView){0};
     }
 
+    // Set the start pointer of the token to the beginning of the selector blob
+    token.start = (char *)start;
+
     return token;
 }
 
@@ -222,7 +228,7 @@ struct Token LexerNextToken(struct Lexer *lexer)
     }
 
     // Create a default EOF token to return the end of input is reached
-    struct Token token = {.type = TOK_EOF, .value = {NULL}};
+    struct Token token = {.type = TOK_EOF, .value = {NULL}, .start = lexer->cursor};
 
     if (LexerIsAtEnd(lexer))
     {

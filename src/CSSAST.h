@@ -29,6 +29,9 @@ typedef struct Token
     TokenType type;
     // String view of the token (e.g., "color", "red")
     struct StringView value;
+
+    // Pointer to the start of the token in the input string
+    char *start
 } Token;
 
 /** @brief The Semantic types of AST Nodes */
