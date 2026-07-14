@@ -304,7 +304,7 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
     // If there is no ';' or '{' after the at-rule, it is a syntax error
     else
     {
-        printf("Syntax error: Expected '{' or ';' after at-rule statement\n");
+        printf("Syntax error: Expected '{' or ';' after at-rule statement. At line %d column %d\n", parser->lexer->line, parser->lexer->column);
         parser->ErrorDiscovered = true;
     }
 
