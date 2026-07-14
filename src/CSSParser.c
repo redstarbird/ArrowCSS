@@ -331,6 +331,8 @@ struct CSSAST *ParseStylesheet(struct Parser *parser)
     {
         struct ASTNode *rule = NULL;
 
+        parser->lexer->expectsSelector = true;
+
         // Decide what to parse based on the current token
         if (check(parser, TOK_AT_RULE))
         {
