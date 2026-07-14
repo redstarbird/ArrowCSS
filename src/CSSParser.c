@@ -171,7 +171,7 @@ static struct ASTNode *ParseRuleset(struct Parser *parser)
     parser->lexer->expectsSelector = true;
 
     // Rewind cursor to the start of the selector for the ruleset
-    parser->lexer->cursor -= parser->currentToken.value.length;
+    parser->lexer->cursor = parser->currentToken.start;
 
     // Re-read from the rewound position using the expectsSelector mode
     advance(parser);
