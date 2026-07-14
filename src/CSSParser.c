@@ -268,6 +268,8 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
     // If next token is a '{' then the at-rule contains a block
     else if (check(parser, TOK_LBRACE))
     {
+        consume(parser, TOK_LBRACE, "Expected '{' after at-rule statement");
+
         struct ASTNode *firstNested = NULL;
         struct ASTNode *currentNested = NULL;
 
