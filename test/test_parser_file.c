@@ -78,6 +78,7 @@ void PrintASTNode(struct ASTNode *node, int depth)
                 printf(" ;\n");
             }
 
+            break;
         case CSS_NODE_DECLARATION:
             printf("[Decl] ");
             PrintStringView(currentNode->data.decl.property);
