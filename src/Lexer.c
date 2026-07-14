@@ -241,7 +241,7 @@ struct Token LexerNextToken(struct Lexer *lexer)
     // Specific handling for finding rule parameters
     if (lexer->state == LEXER_STATE_AT_RULE_PARAMS)
     {
-        // If the current char is a { or ; then the paramters are over
+        // If the current char is a { or ; then the parameters are over
         if (c == '{' || c == ';')
         {
             // Put the state back to normal
