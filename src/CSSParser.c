@@ -238,8 +238,18 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
     node->data.at_rule.name = parser->prevToken.value;
 
     // Consume the at-rule parameters if they exist
-    if (check(parser, TOK_PARAMS))
+    if (!check(parser, TOK_EOF) && !check(parser, TOK_LBRACE) && !check(parser, TOK_SEMICOLON))
     {
+        // Tell the lexer to capture everything up to the '{' or ';' character as a single blob
+        parser->lexer->expectsAtRuleParams = true;
+
+        // Rewind cursor to the start of the at-rule parameters for the ruleset
+        parser->lexer->cursor = parser->currentToken.start;
+
+        // Re-read from the rewound position using the expectsAtRuleParams mode
+        advance(parser);
+
+        // Consume parameter blob
         consume(parser, TOK_PARAMS, "Expected at-rule parameters");
         node->data.at_rule.params = parser->prevToken.value;
     }

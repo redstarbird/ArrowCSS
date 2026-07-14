@@ -46,6 +46,9 @@ struct Lexer
 
     // Flag to indicate if the lexer is parsing a selector blob for a ruleset
     bool expectsSelector;
+
+    // Flag to indicate if the lexer is parsing an at-rule parameters blob
+    bool expectsAtRuleParams;
 };
 
 /** @brief Initialise a lexer instance */

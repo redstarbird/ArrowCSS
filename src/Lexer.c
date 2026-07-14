@@ -213,6 +213,78 @@ struct Token GetRulesetSelector(struct Lexer *lexer)
     return token;
 }
 
+struct Token GetAtRuleParams(struct Lexer *lexer)
+{
+    // Reset expects at-rule parameters flag
+    lexer->expectsAtRuleParams = false;
+
+    struct Token token;
+    token.type = TOK_PARAMS;
+
+    const char *start = lexer->cursor;
+
+    // Skip leading whitespace
+    while (!LexerIsAtEnd(lexer) && isspace((unsigned char)LexerPeek(lexer)))
+    {
+        LexerAdvance(lexer);
+    }
+
+    // Store whether cursor is in a css string, avoid reading a '{' or ';' token from a string
+    bool inQuotes = false;
+    char quoteChar = '\0';
+
+    // Read until the end of the at-rule parameters
+    while (!LexerIsAtEnd(lexer))
+    {
+        char c = LexerPeek(lexer);
+
+        // Handle quote state
+        if (c == '"' || c == '\'')
+        {
+            if (!inQuotes)
+            {
+                inQuotes = true;
+                quoteChar = c;
+            }
+            else if (c == quoteChar)
+            {
+                inQuotes = false;
+            }
+        }
+
+        // Check for the end of the at-rule parameters
+        if (!inQuotes && (c == '{' || c == ';'))
+        {
+            break;
+        }
+
+        LexerAdvance(lexer);
+    }
+
+    const char *end = lexer->cursor;
+
+    // Trim trailing whitespace
+    while (end > start && isspace((unsigned char)*(end - 1)))
+    {
+        end--;
+    }
+
+    // Only return and intern the string if the lexer is not peeking in a look-ahead operation
+    if (!lexer->lexerPeeking)
+    {
+        token.value = InternString(lexer->string_pool, start, end - start);
+    }
+    else
+    {
+        token.value = (struct StringView){0};
+    }
+
+    // Set the start pointer of the token to the beginning of the at-rule parameters
+    token.start = (char *)start;
+
+    return token;
+}
+
 struct Token LexerNextToken(struct Lexer *lexer)
 {
     LexerSkipWhitespaceAndComments(lexer);
@@ -227,6 +299,11 @@ struct Token LexerNextToken(struct Lexer *lexer)
         return GetRulesetSelector(lexer);
     }
 
+    if (lexer->expectsAtRuleParams)
+    {
+        return GetAtRuleParams(lexer);
+    }
+
     // Create a default EOF token to return the end of input is reached
     struct Token token = {.type = TOK_EOF, .value = {NULL}, .start = lexer->cursor};
 
@@ -239,7 +316,7 @@ struct Token LexerNextToken(struct Lexer *lexer)
     char c = LexerPeek(lexer);
 
     // Specific handling for finding rule parameters
-    if (lexer->state == LEXER_STATE_AT_RULE_PARAMS)
+    /*if (lexer->state == LEXER_STATE_AT_RULE_PARAMS)
     {
         // If the current char is a { or ; then the parameters are over
         if (c == '{' || c == ';')
@@ -276,9 +353,7 @@ struct Token LexerNextToken(struct Lexer *lexer)
             token.value = (struct StringView){0};
         }
         return token;
-    }
-
-    // Normal state
+    }*/
 
     c = LexerAdvance(lexer);
 
@@ -320,9 +395,6 @@ struct Token LexerNextToken(struct Lexer *lexer)
         {
             token.value = (struct StringView){0};
         }
-
-        // Change the state to at rule parameters
-        lexer->state = LEXER_STATE_AT_RULE_PARAMS;
 
         return token;
     }
