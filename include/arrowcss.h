@@ -2,6 +2,7 @@
 #define ARROWCSS
 
 #include "../src/CSSAST.h"
+#include "../src/Generator.h"
 
 typedef struct ArrowCssParseOptions
 {
