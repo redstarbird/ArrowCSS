@@ -14,6 +14,9 @@ struct CSSGenerator
 
     // The level of indentation for the generated CSS
     unsigned int indentLevel;
+
+    // Whether to use tabs for indentation instead of spaces
+    bool useTabs;
 };
 
 // Append a string to the generator's buffer, resizing if necessary
