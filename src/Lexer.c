@@ -87,6 +87,8 @@ struct Token GetValueBlob(struct Lexer *lexer)
     // Stores the character used for currently open quotes, " or '
     char quoteChar = '\0';
 
+    int bracketDepth = 0;
+
     while (*lexer->cursor != '\0')
     {
         char c = *lexer->cursor;
@@ -105,8 +107,18 @@ struct Token GetValueBlob(struct Lexer *lexer)
             }
         }
 
+        // Handle bracket state to avoid tokens in brackets
+        if (c == '(')
+        {
+            bracketDepth++;
+        }
+        if (c == ')')
+        {
+            bracketDepth--;
+        }
+
         // Check for the end of the value blob
-        if (!inQuotes && (c == ';' || c == '}'))
+        if (!inQuotes && bracketDepth <= 0 && (c == ';' || c == '}'))
         {
             break;
         }
