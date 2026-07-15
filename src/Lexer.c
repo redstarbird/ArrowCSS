@@ -94,6 +94,18 @@ struct Token GetValueBlob(struct Lexer *lexer)
     {
         char c = *lexer->cursor;
 
+        // Ignore escaped characters to avoid ending the value blob early
+        if (c == '\\')
+        {
+            // Skip the next character after the escape
+            lexer->cursor++;
+            if (*lexer->cursor != '\0')
+            {
+                lexer->cursor++;
+            }
+            continue;
+        }
+
         // Handle quote state to avoid tokens in strings
         if (c == '"' || c == '\'')
         {
