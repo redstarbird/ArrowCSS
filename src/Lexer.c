@@ -87,6 +87,7 @@ struct Token GetValueBlob(struct Lexer *lexer)
     // Stores the character used for currently open quotes, " or '
     char quoteChar = '\0';
 
+    // Store bracket depth to avoid reading a ';' or '}' token from inside a CSS function
     int bracketDepth = 0;
 
     while (*lexer->cursor != '\0')
