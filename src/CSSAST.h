@@ -31,7 +31,7 @@ typedef struct Token
     struct StringView value;
 
     // Pointer to the start of the token in the input string
-    char *start
+    char *start;
 } Token;
 
 /** @brief The Semantic types of AST Nodes */
