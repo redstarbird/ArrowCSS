@@ -1,0 +1,46 @@
+name: C/C++ CI Pipeline
+
+on:
+    push:
+        branches: ["master"]
+    pull_request:
+        branches: ["master"]
+
+jobs:
+    test-platforms:
+        name: ${{ matrix.name }}
+        runs-on: ${{ matrix.os }}
+
+        # Create a matrix of different OS and CMake configurations to test various scenarios
+        strategy:
+            fail-fast: false # Allows all matrix jobs to complete even if one job fails
+            matrix:
+                include:
+                    - name: "Linux (64-bit)"
+                      os: ubuntu-latest
+                      cmake_args: ""
+
+                    - name: "Windows (64-bit)"
+                      os: windows-latest
+                      cmake_args: ""
+
+                    - name: "macOS (64-bit)"
+                      os: macos-latest
+                      cmake_args: ""
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+
+            # Configure CMake using the specific arguments from the matrix
+            - name: Configure CMake
+              run: cmake -B build -S . ${{ matrix.cmake_args }}
+
+            - name: Build
+              run: cmake --build build --config Debug
+
+            # Run CTest
+            - name: Run Tests
+              working-directory: ./build
+              run: ctest --output-on-failure -V -C Debug
