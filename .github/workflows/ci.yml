@@ -31,6 +31,8 @@ jobs:
         steps:
             - name: Checkout Code
               uses: actions/checkout@v4
+              with:
+                submodules: true
 
 
             # Configure CMake using the specific arguments from the matrix
