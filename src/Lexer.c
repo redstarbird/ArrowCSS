@@ -12,6 +12,7 @@ void LexerInit(struct Lexer *lexer, const char *input, size_t length, struct Str
     lexer->lexerPeeking = false;
     lexer->expectsValue = false;
     lexer->expectsSelector = false;
+    lexer->expectsAtRuleParams = false;
 }
 
 extern inline char LexerPeek(struct Lexer *lexer);
