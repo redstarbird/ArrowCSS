@@ -7,16 +7,8 @@ struct CSSGenerator
     size_t length;
     size_t capacity;
 
-    // Configuration options for the generator
-
-    // Whether to minify the generated CSS
-    bool minify;
-
-    // The level of indentation for the generated CSS
-    unsigned int indentLevel;
-
-    // Whether to use tabs for indentation instead of spaces
-    bool useTabs;
+    // User provided configuration for the generator
+    struct CSSGeneratorConfig *config;
 };
 
 // Append a string to the generator's buffer, resizing if necessary
@@ -142,8 +134,7 @@ void CSSGeneratorInit(struct CSSGenerator *generator, struct CSSGeneratorConfig 
     generator->buffer = malloc(2048);
     generator->length = 0;
     generator->capacity = 2048;
-    generator->minify = config->minify;
-    generator->indentLevel = config->indentLevel;
+    generator->config = config;
 }
 
 // Public function for generating CSS from the AST
