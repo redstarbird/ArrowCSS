@@ -8,8 +8,8 @@ struct CSSGeneratorConfig
 {
     // Whether to minify the generated CSS
     bool minify;
-    // The level of indentation for the generated CSS
-    int indentLevel;
+    // The number of spaces to use for indentation in the generated CSS
+    unsigned int indentLevel;
     // Whether to use tabs for indentation instead of spaces
     bool useTabs;
 };
