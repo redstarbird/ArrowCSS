@@ -73,8 +73,6 @@ static void LexerSkipWhitespaceAndComments(struct Lexer *lexer)
     }
 }
 
-#include <stdlib.h>
-
 struct Token GetValueBlob(struct Lexer *lexer)
 {
     // Reset expects value flag
