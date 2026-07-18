@@ -41,7 +41,7 @@ static bool consume(Parser *parser, TokenType type, const char *error_message)
     }
 
     // If not the expected token then the CSS is malformed
-    printf("Syntax Error: %s At line %i column %i. Found: %.*s\n", error_message, parser->lexer->line, parser->lexer->column, (int)parser->currentToken.value.length, parser->currentToken.value.data);
+    printf("Syntax Error: %s At line %i column %i. Found: %.*s\n", error_message, parser->lexer->filePos.line, parser->lexer->filePos.column, (int)parser->currentToken.value.length, parser->currentToken.value.data);
     parser->ErrorDiscovered = true;
 
     // Forcibly advance the lexer forward to prevent an infinite loop in the case of a syntax error
@@ -316,7 +316,7 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
     // If there is no ';' or '{' after the at-rule, it is a syntax error
     else
     {
-        printf("Syntax error: Expected '{' or ';' after at-rule statement. At line %d column %d\n", parser->lexer->line, parser->lexer->column);
+        printf("Syntax error: Expected '{' or ';' after at-rule statement. At line %d column %d\n", parser->lexer->filePos.line, parser->lexer->filePos.column);
         parser->ErrorDiscovered = true;
     }
 

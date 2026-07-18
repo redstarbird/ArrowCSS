@@ -6,8 +6,8 @@ void LexerInit(struct Lexer *lexer, const char *input, size_t length, struct Str
     lexer->input = input;
     lexer->length = length;
     lexer->cursor = (char *)input;
-    lexer->line = 1;
-    lexer->column = 0;
+    lexer->filePos.line = 1;
+    lexer->filePos.column = 0;
     lexer->string_pool = string_pool;
     lexer->lexerPeeking = false;
     lexer->expectsValue = false;
@@ -21,11 +21,11 @@ static inline char LexerAdvance(struct Lexer *lexer)
 {
     char c = *lexer->cursor;
     lexer->cursor++;
-    lexer->column++;
+    lexer->filePos.column++;
     if (LexerPeek(lexer) == '\n')
     {
-        lexer->line++;
-        lexer->column = 0;
+        lexer->filePos.line++;
+        lexer->filePos.column = 0;
     }
     return c;
 }
