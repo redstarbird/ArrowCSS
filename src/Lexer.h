@@ -26,11 +26,9 @@ struct Lexer
     // Current position in the input
     char *cursor;
 
-    // Current line number (for error reporting)
-    int line;
-
-    // Current column number (for error reporting)
-    int column;
+    // Stores the current line-column position in the file
+    // Used for source maps and error reporting
+    struct FilePosition filePos;
 
     // String pool for token values
     struct StringPool *string_pool;
