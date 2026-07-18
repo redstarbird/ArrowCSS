@@ -62,6 +62,9 @@ struct ASTNode
     /** @brief Pointer to the next sibling node (For linked list of rules/declarations) */
     struct ASTNode *next;
 
+    /** @brief Read-only: The line-column position where the node starts in the file */
+    struct FilePosition position;
+
     /** @brief Union holding node-specific data based on the node type */
     union
     {

@@ -122,6 +122,8 @@ static struct ASTNode *ParseDeclaration(struct Parser *parser)
     node->type = CSS_NODE_DECLARATION;
     node->next = NULL;
 
+    node->position = parser->lexer->filePos;
+
     // Expect the property name (e.g, "color")
     consume(parser, TOK_IDENTIFIER, "Expected property name.");
     node->data.decl.property = parser->prevToken.value;
@@ -163,6 +165,8 @@ static struct ASTNode *ParseRuleset(struct Parser *parser)
     struct ASTNode *node = PushStruct(parser->arena, struct ASTNode);
     node->type = CSS_NODE_RULESET;
     node->next = NULL;
+
+    node->position = parser->lexer->filePos;
 
     // Find the CSS selector
     // consume(parser, TOK_IDENTIFIER, "Expected CSS selector.");
@@ -232,6 +236,8 @@ struct ASTNode *ParseAtRule(struct Parser *parser)
     struct ASTNode *node = PushStruct(parser->arena, struct ASTNode);
     node->type = CSS_NODE_AT_RULE;
     node->next = NULL;
+
+    node->position = parser->lexer->filePos;
 
     // Consume the name of the at-rule (e.g, @media or @import)
     consume(parser, TOK_AT_RULE, "Expected at-rule name");
@@ -334,6 +340,7 @@ struct CSSAST *ParseStylesheet(struct Parser *parser)
 
     struct ASTNode *root = PushStruct(parser->arena, struct ASTNode);
     root->type = CSS_NODE_STYLESHEET;
+    root->position = parser->lexer->filePos;
 
     struct ASTNode *firstRule = NULL;
     struct ASTNode *currentRule = NULL;
