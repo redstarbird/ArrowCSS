@@ -9,6 +9,13 @@
 #include <MemoryArena.h>
 #include <StringPool.h>
 
+// Represents a position in a file
+typedef struct FilePosition
+{
+    unsigned int line;
+    unsigned int column;
+} FilePosition;
+
 /** @brief Enumeration of token types in the CSS parser */
 typedef enum
 {
