@@ -20,12 +20,25 @@ extern inline char LexerPeek(struct Lexer *lexer);
 static inline char LexerAdvance(struct Lexer *lexer)
 {
     char c = *lexer->cursor;
+
+    // Safety check
+    if (c == '\0')
+    {
+        return c;
+    }
+
     lexer->cursor++;
-    lexer->filePos.column++;
-    if (LexerPeek(lexer) == '\n')
+
+    // Update column and line
+    if (c == '\n')
     {
         lexer->filePos.line++;
         lexer->filePos.column = 0;
+    }
+    else
+    {
+
+        lexer->filePos.column++;
     }
     return c;
 }
