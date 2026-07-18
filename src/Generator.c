@@ -76,7 +76,7 @@ static void GeneratorAppendIndentation(struct CSSGenerator *generator)
 }
 
 // Recursive function to generate CSS from the AST nodes
-void GenerateCSS(struct CSSGenerator *generator, struct ASTNode *node)
+void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapGenerator, struct ASTNode *node)
 {
     if (node == NULL || generator == NULL)
     {
@@ -89,7 +89,7 @@ void GenerateCSS(struct CSSGenerator *generator, struct ASTNode *node)
         switch (current->type)
         {
         case CSS_NODE_STYLESHEET:
-            GenerateCSS(generator, current->data.stylesheet.children);
+            GenerateCSS(generator, sourceMapGenerator, current->data.stylesheet.children);
             break;
 
         case CSS_NODE_RULESET:
@@ -110,7 +110,7 @@ void GenerateCSS(struct CSSGenerator *generator, struct ASTNode *node)
             }
 
             generator->currentIndentDepth++;
-            GenerateCSS(generator, current->data.ruleset.declarations);
+            GenerateCSS(generator, sourceMapGenerator, current->data.ruleset.declarations);
             generator->currentIndentDepth--;
 
             GeneratorAppendIndentation(generator);
@@ -192,7 +192,7 @@ void GenerateCSS(struct CSSGenerator *generator, struct ASTNode *node)
 
                 // Apply indentation for block and recursively generate its contents
                 generator->currentIndentDepth++;
-                GenerateCSS(generator, current->data.at_rule.block);
+                GenerateCSS(generator, sourceMapGenerator, current->data.at_rule.block);
                 generator->currentIndentDepth--;
 
                 // End brace for the at-rule block with proper indentation
@@ -264,7 +264,15 @@ char *ArrowCSS_GenerateCSSFromAST(struct CSSAST *ast, struct CSSGeneratorConfig 
 
     CSSGeneratorInit(&generator, config);
 
-    GenerateCSS(&generator, ast->root);
+    struct CSSGenerator sourceMapGenerator;
+
+    // If source map generation is enabled, initialise the source map generator
+    if (config->generateSourceMap)
+    {
+        CSSGeneratorInit(&sourceMapGenerator, NULL);
+    }
+
+    GenerateCSS(&generator, config->generateSourceMap ? &sourceMapGenerator : NULL, ast->root);
 
     return CSSGeneratorFinish(&generator);
 }
