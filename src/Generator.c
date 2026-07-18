@@ -234,12 +234,20 @@ void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapG
     }
 }
 
-char *CSSGeneratorFinish(struct CSSGenerator *generator)
+struct ArrowCSSBuildResult *ArrowCSSBuildResultCreate(char *css, char *sourceMap)
+{
+    struct ArrowCSSBuildResult *result = malloc(sizeof(struct ArrowCSSBuildResult));
+    result->css = css;
+    result->sourceMap = sourceMap;
+    return result;
+}
+
+struct ArrowCSSBuildResult *CSSGeneratorFinish(struct CSSGenerator *generator)
 {
     // Add the final null terminator
     GeneratorAppendChar(generator, '\0');
 
-    return generator->buffer;
+    return ArrowCSSBuildResultCreate(generator->buffer, NULL);
 }
 
 void CSSGeneratorInit(struct CSSGenerator *generator, struct CSSGeneratorConfig *config)
@@ -253,7 +261,7 @@ void CSSGeneratorInit(struct CSSGenerator *generator, struct CSSGeneratorConfig 
 }
 
 // Public function for generating CSS from the AST
-char *ArrowCSS_GenerateCSSFromAST(struct CSSAST *ast, struct CSSGeneratorConfig *config)
+struct ArrowCSSBuildResult *ArrowCSS_GenerateCSSFromAST(struct CSSAST *ast, struct CSSGeneratorConfig *config)
 {
     if (ast == NULL)
     {

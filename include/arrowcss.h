@@ -20,6 +20,15 @@ typedef struct ArrowCssParseOptions
 
 } ArrowCssParseOptions;
 
+// Contains the generated CSS and source map (if requested)
+typedef struct ArrowCSSBuildResult
+{
+    // The generated CSS string
+    char *css;
+    // The generated source map string (if requested)
+    char *sourceMap;
+} ArrowCSSBuildResult;
+
 struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssParseOptions *options);
 
 #endif
