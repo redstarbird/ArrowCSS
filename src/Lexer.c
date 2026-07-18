@@ -80,8 +80,6 @@ struct Token GetValueBlob(struct Lexer *lexer)
     // Reset expects value flag
     lexer->expectsValue = false;
 
-    const char *start = lexer->cursor;
-
     // Store whether cursor is in a css string to avoid reading a ';' or '}' token from a string
     bool inQuotes = false;
 
@@ -90,6 +88,14 @@ struct Token GetValueBlob(struct Lexer *lexer)
 
     // Store bracket depth to avoid reading a ';' or '}' token from inside a CSS function
     int bracketDepth = 0;
+
+    // Trim leading whitespace
+    while (*lexer->cursor != '\0' && isspace(*lexer->cursor))
+    {
+        lexer->cursor++;
+    }
+
+    const char *start = lexer->cursor;
 
     while (*lexer->cursor != '\0')
     {
@@ -175,13 +181,19 @@ struct Token GetRulesetSelector(struct Lexer *lexer)
     // Reset expects selector flag
     lexer->expectsSelector = false;
 
-    const char *start = lexer->cursor;
-
     // Store whether cursor is in a css string to avoid reading a '{' token from a string
     bool inQuotes = false;
 
     // Stores the character used for currently open quotes, " or '
     char quoteChar = '\0';
+
+    // Trim leading whitespace
+    while (*lexer->cursor != '\0' && isspace(*lexer->cursor))
+    {
+        lexer->cursor++;
+    }
+
+    const char *start = lexer->cursor;
 
     while (*lexer->cursor != '\0')
     {
@@ -247,13 +259,13 @@ struct Token GetAtRuleParams(struct Lexer *lexer)
     struct Token token;
     token.type = TOK_PARAMS;
 
-    const char *start = lexer->cursor;
-
     // Skip leading whitespace
     while (!LexerIsAtEnd(lexer) && isspace((unsigned char)LexerPeek(lexer)))
     {
         LexerAdvance(lexer);
     }
+
+    const char *start = lexer->cursor;
 
     // Store whether cursor is in a css string, avoid reading a '{' or ';' token from a string
     bool inQuotes = false;
