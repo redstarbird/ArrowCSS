@@ -6,7 +6,7 @@ void LexerInit(struct Lexer *lexer, const char *input, size_t length, struct Str
     lexer->input = input;
     lexer->length = length;
     lexer->cursor = (char *)input;
-    lexer->filePos.line = 1;
+    lexer->filePos.line = 0;
     lexer->filePos.column = 0;
     lexer->string_pool = string_pool;
     lexer->lexerPeeking = false;
