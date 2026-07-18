@@ -90,7 +90,7 @@ struct Token GetValueBlob(struct Lexer *lexer)
     // Trim leading whitespace
     while (*lexer->cursor != '\0' && isspace(*lexer->cursor))
     {
-        lexer->cursor++;
+        LexerAdvance(lexer);
     }
 
     const char *start = lexer->cursor;
@@ -103,10 +103,10 @@ struct Token GetValueBlob(struct Lexer *lexer)
         if (c == '\\')
         {
             // Skip the next character after the escape
-            lexer->cursor++;
+            LexerAdvance(lexer);
             if (*lexer->cursor != '\0')
             {
-                lexer->cursor++;
+                LexerAdvance(lexer);
             }
             continue;
         }
@@ -142,7 +142,7 @@ struct Token GetValueBlob(struct Lexer *lexer)
         }
 
         // Advance cursor
-        lexer->cursor++;
+        LexerAdvance(lexer);
     }
 
     const char *end = lexer->cursor;
@@ -188,7 +188,7 @@ struct Token GetRulesetSelector(struct Lexer *lexer)
     // Trim leading whitespace
     while (*lexer->cursor != '\0' && isspace(*lexer->cursor))
     {
-        lexer->cursor++;
+        LexerAdvance(lexer);
     }
 
     const char *start = lexer->cursor;
@@ -218,7 +218,7 @@ struct Token GetRulesetSelector(struct Lexer *lexer)
         }
 
         // Advance cursor
-        lexer->cursor++;
+        LexerAdvance(lexer);
     }
 
     const char *end = lexer->cursor;
