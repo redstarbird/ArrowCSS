@@ -39,6 +39,9 @@ typedef struct Token
 
     // Pointer to the start of the token in the input string
     char *start;
+
+    // File line-column position of the start of the token
+    struct FilePosition filePos;
 } Token;
 
 /** @brief The Semantic types of AST Nodes */

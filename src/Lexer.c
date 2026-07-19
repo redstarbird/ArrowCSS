@@ -358,10 +358,14 @@ struct Token LexerNextToken(struct Lexer *lexer)
 
     if (LexerIsAtEnd(lexer))
     {
+        token.filePos = lexer->filePos;
         return token;
     }
 
     const char *start = lexer->cursor;
+    struct FilePosition startPos = lexer->filePos;
+    token.filePos = startPos;
+
     char c = LexerPeek(lexer);
 
     // Specific handling for finding rule parameters
