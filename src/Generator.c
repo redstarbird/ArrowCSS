@@ -375,8 +375,8 @@ struct ArrowCSSBuildResult *ArrowCSS_GenerateCSSFromAST(struct CSSAST *ast, stru
     if (config->generateSourceMap)
     {
         CSSGeneratorInit(&sourceMapGenerator, NULL);
-        // Start the JSON
-        GeneratorAppend(&sourceMapGenerator, "{\"version\":3,\"mappings\":\"", 25);
+        // Start the JSON (sources field is required by source map v3 spec)
+        GeneratorAppend(&sourceMapGenerator, "{\"version\":3,\"sources\":[],\"mappings\":\"", 38);
     }
 
     // Recursive CSS generate function
