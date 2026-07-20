@@ -46,10 +46,20 @@ jobs:
                   CC: ${{ matrix.compiler }}
               run: cmake -B build -S . ${{ matrix.cmake_args }}
 
-            - name: Build
+            # Build - Debug
+            - name: Build (Debug)
               run: cmake --build build --config Debug
 
-            # Run CTest
-            - name: Run Tests
+            # Run CTest - Debug
+            - name: Run Tests (Debug)
               working-directory: ./build
               run: ctest --output-on-failure -V -C Debug
+
+            # Build - Release
+            - name: Build (Release)
+              run: cmake --build build --config Release
+
+            # Run CTest - Release
+            - name: Run Tests (Release)
+              working-directory: ./build
+              run: ctest --output-on-failure -V -C Release
