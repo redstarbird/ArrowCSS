@@ -19,6 +19,9 @@ struct CSSGeneratorConfig
 
     // Whether to generate source maps for the generated CSS
     bool generateSourceMap;
+
+    // Name of the input file (defaults to "source.css" if empty)
+    const char *inputFileName;
 };
 
 /** Generates CSS from a CSS AST based on the provided configuration. */
