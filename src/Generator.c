@@ -46,6 +46,7 @@ static void GeneratorAppend(struct CSSGenerator *generator, const char *str, siz
                 generator->genPosition.line++;
                 generator->genPosition.column = 0;
             }
+            else
             {
                 generator->genPosition.column++;
             }
