@@ -206,13 +206,13 @@ void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapG
             break;
         case CSS_NODE_RULESET:
 
-            // Append node's mapping to the source map
-            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
-
             // Append selector, opening brace, recursively append declarations, and closing brace
 
             // Append indentation for the ruleset, needed for nested rulesets
             GeneratorAppendIndentation(generator);
+
+            // Append node's mapping to the source map
+            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
 
             GeneratorAppendStringView(generator, &current->data.ruleset.selectors);
 
@@ -249,11 +249,11 @@ void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapG
 
         case CSS_NODE_DECLARATION:
 
-            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
-
             // Add property value pair to the buffer
 
             GeneratorAppendIndentation(generator);
+
+            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
 
             GeneratorAppendStringView(generator, &current->data.decl.property);
             GeneratorAppendChar(generator, ':');
@@ -284,10 +284,10 @@ void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapG
         // Handle at-rule nodes
         case CSS_NODE_AT_RULE:
 
-            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
-
             // Apply indentation for the name and parameters of the at-rule
             GeneratorAppendIndentation(generator);
+
+            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
 
             // Ensure the at-rule name starts with '@'
             if (current->data.at_rule.name.length > 0 && current->data.at_rule.name.data[0] != '@')
