@@ -35,26 +35,28 @@ static void GeneratorAppend(struct CSSGenerator *generator, const char *str, siz
     // Append the string to the buffer
     memcpy(generator->buffer + generator->length, str, len);
     generator->length += len;
+
+    // If generating source maps, update the generator line and column accordingly
+    if (generator->config != NULL && generator->config->generateSourceMap)
+    {
+        for (unsigned int i = 0; i < len; i++)
+        {
+            if (str[i] == '\n')
+            {
+                generator->genPosition.line++;
+                generator->genPosition.column = 0;
+            }
+            {
+                generator->genPosition.column++;
+            }
+        }
+    }
 }
 
 // Append a single character to the generator's buffer
 static void GeneratorAppendChar(struct CSSGenerator *generator, char c)
 {
     GeneratorAppend(generator, &c, 1);
-
-    if (generator->config != NULL && generator->config->generateSourceMap)
-    {
-        // Update the current file position for source map generation
-        if (c == '\n')
-        {
-            generator->genPosition.line++;
-            generator->genPosition.column = 0;
-        }
-        else
-        {
-            generator->genPosition.column++;
-        }
-    }
 }
 
 // Append a string view to the generator's buffer
