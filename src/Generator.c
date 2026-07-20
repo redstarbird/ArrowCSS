@@ -130,6 +130,7 @@ struct SourceMapState
     int previousSourceIndex;
     int previousSourceLine;
     int previousSourceColumn;
+    bool isFirstMapping;
 };
 
 // Appends a mapping to the source map generator buffer
@@ -139,6 +140,17 @@ void AppendMapping(struct CSSGenerator *generator, struct SourceMapState *state,
     if (generator == NULL || state == NULL)
     {
         return;
+    }
+
+    // Add a comma before every mapping except for the first mapping
+    if (state->isFirstMapping)
+    {
+        state->isFirstMapping = false;
+    }
+    else
+    {
+        // Separate mappings with a comma
+        GeneratorAppendChar(generator, ',');
     }
 
     // Generated column (relative to previous generated column)
@@ -156,9 +168,6 @@ void AppendMapping(struct CSSGenerator *generator, struct SourceMapState *state,
     // Source column (relative to previous source column)
     GeneratorAppendVLQ(generator, sourceColumn - state->previousSourceColumn);
     state->previousSourceColumn = sourceColumn;
-
-    // Separate mappings with a comma
-    GeneratorAppendChar(generator, ',');
 }
 
 // Recursive function to generate CSS from the AST nodes
@@ -369,7 +378,8 @@ struct ArrowCSSBuildResult *ArrowCSS_GenerateCSSFromAST(struct CSSAST *ast, stru
 
     struct CSSGenerator sourceMapGenerator;
 
-    struct SourceMapState sourceMapState = {0};
+    // Initialise source map state
+    struct SourceMapState sourceMapState = {.isFirstMapping = true};
 
     // If source map generation is enabled, initialise the source map generator
     if (config->generateSourceMap)
