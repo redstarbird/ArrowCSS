@@ -362,6 +362,7 @@ void CSSGeneratorInit(struct CSSGenerator *generator, struct CSSGeneratorConfig 
     generator->capacity = 2048;
     generator->config = config;
     generator->currentIndentDepth = 0;
+    generator->genPosition = (struct FilePosition){0};
 }
 
 // Public function for generating CSS from the AST
