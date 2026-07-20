@@ -153,7 +153,7 @@ void AppendMapping(struct CSSGenerator *generator, struct SourceMapState *state,
         GeneratorAppendChar(generator, ';');
 
         // Reset generated column to zero
-        state->previousSourceColumn = 0;
+        state->previousGeneratedColumn = 0;
 
         state->isFirstMapping = true;
     }
