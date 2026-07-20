@@ -20,6 +20,8 @@ void test_lexer_punctuation()
     struct Token t3 = LexerNextToken(&lexer);
     ASSERT_TRUE(t3.type == TOK_COLON, "Expected ':'");
 
+    DestroyStringPool(pool);
+
     printf("[PASS] test_lexer_punctuation\n");
 }
 
