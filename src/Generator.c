@@ -416,6 +416,19 @@ struct ArrowCSSBuildResult *ArrowCSS_GenerateCSSFromAST(struct CSSAST *ast, stru
     // Recursive CSS generate function
     GenerateCSS(&generator, config->generateSourceMap ? &sourceMapGenerator : NULL, ast->root, &sourceMapState);
 
+    // If source map generation enabled, inject the mapping comment at the end of the CSS
+    if (config->generateSourceMap)
+    {
+
+        GeneratorAppend(&generator, "\n/*# sourceMappingURL=", 22);
+
+        const char *sourceMapFile = "out.css.map";
+
+        GeneratorAppend(&generator, sourceMapFile, strlen(sourceMapFile));
+
+        GeneratorAppend(&generator, " */", 3);
+    }
+
     char *cssOutput = CSSGeneratorFinish(&generator);
     char *sourceMapOutput = NULL;
 
