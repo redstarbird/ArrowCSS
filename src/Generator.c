@@ -422,7 +422,7 @@ struct ArrowCSSBuildResult *ArrowCSS_GenerateCSSFromAST(struct CSSAST *ast, stru
 
         GeneratorAppend(&generator, "\n/*# sourceMappingURL=", 22);
 
-        const char *sourceMapFile = "out.css.map";
+        const char *sourceMapFile = config->outputMapName ? config->outputMapName : "out.css.map";
 
         GeneratorAppend(&generator, sourceMapFile, strlen(sourceMapFile));
 
