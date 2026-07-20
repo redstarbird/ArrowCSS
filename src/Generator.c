@@ -47,6 +47,7 @@ static void GeneratorAppendChar(struct CSSGenerator *generator, char c)
         // Update the current file position for source map generation
         if (c == '\n')
         {
+            generator->genPosition.line++;
             generator->genPosition.column = 0;
         }
         else
@@ -130,16 +131,29 @@ struct SourceMapState
     int previousSourceIndex;
     int previousSourceLine;
     int previousSourceColumn;
+    int previousGeneratedLine;
     bool isFirstMapping;
 };
 
 // Appends a mapping to the source map generator buffer
-void AppendMapping(struct CSSGenerator *generator, struct SourceMapState *state, int generatedColumn, int sourceIndex, int sourceLine, int sourceColumn)
+void AppendMapping(struct CSSGenerator *generator, struct SourceMapState *state, int generatedColumn, int generatedLine, int sourceIndex, int sourceLine, int sourceColumn)
 {
     // If source maps are not being generated, generator will be NULL, so we can return immediately (also check state for safety)
     if (generator == NULL || state == NULL)
     {
         return;
+    }
+
+    // Add a semicolon for each new line
+    while (state->previousGeneratedLine < generatedLine)
+    {
+        state->previousGeneratedLine++;
+        GeneratorAppendChar(generator, ';');
+
+        // Reset generated column to zero
+        state->previousSourceColumn = 0;
+
+        state->isFirstMapping = true;
     }
 
     // Add a comma before every mapping except for the first mapping
@@ -190,7 +204,7 @@ void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapG
         case CSS_NODE_RULESET:
 
             // Append node's mapping to the source map
-            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, 0, current->position.column, current->position.line);
+            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
 
             // Append selector, opening brace, recursively append declarations, and closing brace
 
@@ -232,7 +246,7 @@ void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapG
 
         case CSS_NODE_DECLARATION:
 
-            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, 0, current->position.column, current->position.line);
+            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
 
             // Add property value pair to the buffer
 
@@ -267,7 +281,7 @@ void GenerateCSS(struct CSSGenerator *generator, struct CSSGenerator *sourceMapG
         // Handle at-rule nodes
         case CSS_NODE_AT_RULE:
 
-            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, 0, current->position.column, current->position.line);
+            AppendMapping(sourceMapGenerator, sourceMapState, generator->genPosition.column, generator->genPosition.line, 0, current->position.column, current->position.line);
 
             // Apply indentation for the name and parameters of the at-rule
             GeneratorAppendIndentation(generator);
