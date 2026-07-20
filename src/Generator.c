@@ -139,7 +139,7 @@ struct SourceMapState
 };
 
 // Appends a mapping to the source map generator buffer
-void AppendMapping(struct CSSGenerator *generator, struct SourceMapState *state, int generatedColumn, int generatedLine, int sourceIndex, int sourceLine, int sourceColumn)
+void AppendMapping(struct CSSGenerator *generator, struct SourceMapState *state, int generatedColumn, int generatedLine, int sourceIndex, int sourceColumn, int sourceLine)
 {
     // If source maps are not being generated, generator will be NULL, so we can return immediately (also check state for safety)
     if (generator == NULL || state == NULL)
