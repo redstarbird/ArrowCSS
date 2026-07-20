@@ -111,6 +111,7 @@ void test_simple_file()
     struct CSSAST *ast = ParseCSSToAST(fileData, fileSize, &(struct ArrowCssParseOptions){.arena = NULL, .pool = NULL, .filename = "simple.css", .generateSourceMap = false, .silent = false});
 
     free(fileData);
+    ArrowCSS_DestroyAST(ast);
 
     printf("[PASS] test_parse_simple_file\n\n");
 }
@@ -125,6 +126,7 @@ void test_advanced_file()
     struct CSSAST *ast = ParseCSSToAST(fileData, fileSize, &(struct ArrowCssParseOptions){.arena = NULL, .pool = NULL, .filename = "simple.css", .generateSourceMap = false, .silent = false});
 
     free(fileData);
+    ArrowCSS_DestroyAST(ast);
 
     printf("[PASS] test_parse_advanced_file\n\n");
 }
