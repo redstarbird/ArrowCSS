@@ -21,4 +21,6 @@ typedef struct Parser
 /** @brief Initialise a parser instance */
 void ParserInit(struct Parser *parser, struct Lexer *lexer, struct MemoryArena *arena);
 
+struct CSSAST *ParseStylesheet(struct Parser *parser);
+
 #endif
