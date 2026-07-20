@@ -11,6 +11,7 @@ target_sources(ArrowCSS PRIVATE
     src/Lexer.c
     src/CSSParser.c
     src/Generator.c
+    src/AST.c
 )
 
 target_include_directories(ArrowCSS PUBLIC

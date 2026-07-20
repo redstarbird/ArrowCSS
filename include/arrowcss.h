@@ -31,4 +31,8 @@ typedef struct ArrowCSSBuildResult
 
 struct CSSAST *ParseCSSToAST(char *fileContent, size_t length, struct ArrowCssParseOptions *options);
 
+/// @brief Frees the memory of the provided AST, this can only be done for the string pool and/or memory arena if they are not provided by the user.
+/// @param ast The ast to be destroyed
+void ArrowCSS_DestroyAST(struct CSSAST *ast);
+
 #endif
